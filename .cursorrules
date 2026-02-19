@@ -1,0 +1,160 @@
+# Cursor Rules for Tinkering Projects
+
+## ⚠️ CRITICAL RULE: ALWAYS READ README FIRST ⚠️
+
+**MANDATORY: Before ANY code changes, file edits, or task execution:**
+1. **MUST read `README.md` completely** to understand:
+   - Current project status and active phase
+   - Hardware specifications and identification status
+   - Required libraries and dependencies
+   - Pin mappings and connections
+   - Known issues, solutions, and important notes
+
+2. **MUST check hardware skill files** in `.cursor/skills/hardware-*.md` for:
+   - Detailed hardware pinout information
+   - Chip identification and markings
+   - Library requirements and installation
+   - Wiring specifications and connections
+   - Purchase information and vendor details (if applicable)
+
+**DO NOT proceed with any changes until you have read the relevant documentation.**
+
+## Keep Documentation Updated
+
+**AFTER making any changes:**
+1. **MUST update `README.md`** if you:
+   - Change library requirements
+   - Modify hardware connections or pin mappings
+   - Add or remove features
+   - Fix known issues or discover new ones
+   - Change code structure or file organization
+   - Identify hardware components or specifications
+
+2. **MUST update hardware skill files** (`.cursor/skills/hardware-*.md`) if you:
+   - Identify chip markings or components from images
+   - Discover new hardware specifications
+   - Find different library requirements
+   - Update wiring information
+   - Add troubleshooting notes
+   - Receive purchase link or vendor information
+
+3. **Documentation should reflect the current working state** - if something works differently than documented, update the docs to match reality.
+
+## Code Guidelines
+
+- Use `F()` macro for string literals to save RAM on memory-constrained boards (ESP32, ESP8266, AVR)
+- Keep Serial output reasonable for boards with limited SRAM
+- Always verify pin connections before troubleshooting
+- Document any pin mappings or configurations discovered during testing
+- Test code should be clearly marked as prototype/experimental
+- Consider voltage levels (3.3V vs 5V) when connecting components
+- Use appropriate pull-up/pull-down resistors for inputs
+- Be mindful of strapping pins and boot behavior on ESP boards
+
+## Skills Management - STRICT NAMING CONVENTIONS
+
+**⚠️ MANDATORY: All skills MUST follow these strict naming conventions.**
+
+### Skills Location
+- All skills are stored in `.cursor/skills/` directory
+- Skills are Markdown files (`.md` extension)
+
+### Naming Conventions (STRICT)
+
+**Hardware Skills:**
+- **Format**: `hardware-{hardware-name}.md`
+- **Purpose**: Hardware-specific knowledge, pinouts, specifications, and code patterns
+- **Example**: `hardware-esp32-devkit.md`, `hardware-arduino-uno.md`
+- **Content**: Must include hardware identification, pin configurations, voltage levels, code patterns specific to that hardware, and examples
+- **CLI Tool Configuration**: Hardware-specific CLI tool configuration (FQBN, board-specific commands, port settings, upload settings) MUST be included in the hardware skill file, NOT in the CLI tool skill file
+
+**CLI Tool Skills:**
+- **Format**: `cli-tool-{tool-name}.md`
+- **Purpose**: CLI tools and commands for specific tasks
+- **Example**: `cli-tool-arduino-cli.md`, `cli-tool-platformio.md`
+- **Content**: Must include tool installation, usage patterns, common commands, and examples
+- **Important**: General CLI tool usage and commands go here. Hardware-specific CLI configuration (FQBN, port settings, board-specific commands) goes in the hardware skill file.
+
+### Rules for Creating/Editing Skills
+
+1. **NEVER create skills without proper prefix** - All skills MUST start with their category prefix (`hardware-` or `cli-tool-`)
+2. **Hardware skills are self-contained** - Each hardware skill should contain:
+   - Hardware identification and specifications
+   - Pin configurations and capabilities
+   - Code patterns specific to that hardware
+   - Code examples
+   - Best practices for that hardware
+   - **CLI tool configuration specific to that hardware** (e.g., Arduino CLI FQBN, board-specific compile/upload commands, port detection, troubleshooting for that hardware)
+3. **No generic skill files** - Do NOT create files like `code-patterns.md`, `troubleshooting.md`, etc. without a prefix
+4. **One hardware = one file** - Each hardware variant gets its own file (e.g., `hardware-esp32-devkit.md`, `hardware-arduino-uno.md`)
+5. **Skills are project-specific** - Skills in `.cursor/skills/` are for this project only
+
+### When Creating a New Skill
+
+1. **Determine the category**: Hardware or CLI tool?
+2. **Use correct prefix**: `hardware-` or `cli-tool-`
+3. **Name format**: Use lowercase, hyphens for separators (e.g., `hardware-esp32-s3.md`)
+4. **Include all relevant information**: Don't split hardware knowledge across multiple files
+5. **Reference existing skills**: Check if a skill already exists before creating a new one
+
+### CLI Tool Configuration Guidelines
+
+**CRITICAL: Where to put CLI tool configuration**
+
+1. **General CLI tool usage** → Goes in `cli-tool-{tool-name}.md`
+   - Installation instructions
+   - General commands and syntax
+   - Common workflows
+   - General troubleshooting
+
+2. **Hardware-specific CLI configuration** → Goes in `hardware-{hardware-name}.md`
+   - Board FQBN (Fully Qualified Board Name)
+   - Hardware-specific compile/upload commands
+   - Port detection and settings for that hardware
+   - Board-specific options and settings
+   - Hardware-specific troubleshooting
+   - Example: Arduino CLI FQBN for ESP32 goes in `hardware-esp32-devkit.md`, not in `cli-tool-arduino-cli.md`
+
+**Example:**
+- `cli-tool-arduino-cli.md` contains: "How to compile: `arduino-cli compile --fqbn <fqbn> <sketch>`"
+- `hardware-esp32-devkit.md` contains: "ESP32 DevKit FQBN: `esp32:esp32:esp32`" and "Compile command: `arduino-cli compile --fqbn esp32:esp32:esp32 sketch.ino`"
+
+### Maintenance
+
+- **Update skills when hardware knowledge changes**
+- **Keep skills focused** - Each skill should be comprehensive for its specific topic
+- **Remove obsolete skills** - Delete skills that are no longer relevant
+- **Document in skills** - Skills should be self-documenting and complete
+- **Update hardware skills when CLI tool configuration changes** - If board FQBN or settings change, update the hardware skill, not the CLI tool skill
+
+## General Embedded Development Considerations
+
+### Memory Management
+- **ESP32/ESP8266**: Use `F()` macro for strings, manage SRAM carefully
+- **AVR (Arduino Uno/Nano)**: Use PROGMEM for large arrays, be mindful of flash/RAM limits
+- **All boards**: Minimize global variables, use local scope when possible
+
+### Voltage Levels
+- **3.3V boards** (ESP32, ESP8266): Most GPIOs are 3.3V, some may be 5V tolerant
+- **5V boards** (Arduino Uno, Mega): GPIOs are 5V, may need level shifters for 3.3V devices
+- **Always check datasheet** for voltage tolerance before connecting components
+
+### Communication Protocols
+- **I2C**: Requires pull-up resistors (usually on module or board)
+- **SPI**: Check clock speed limits for your hardware
+- **UART**: Verify baud rates match between devices
+- **WiFi/Bluetooth**: Check board capabilities and library support
+
+### Power Management
+- Consider power consumption for battery-powered projects
+- Use sleep modes when available (ESP32, ESP8266)
+- Be mindful of current draw limits
+
+## Documentation Best Practices
+
+- Keep README.md updated with current project status
+- Document hardware-specific information in skill files
+- Include troubleshooting sections for common issues
+- Add code examples in skill files, not just in source code
+- Document pin mappings clearly
+- Include voltage level warnings where applicable
