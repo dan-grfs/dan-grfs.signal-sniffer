@@ -61,6 +61,7 @@ This single command will:
 ```
 .
 ├── dan-grfs.signal-sniffer.ino  # Main ESP32 firmware
+├── test.txt                      # Root-level text file for testing
 ├── sketch.yaml                   # Arduino CLI configuration
 ├── docs/                         # Project documentation
 │   ├── project-plan.md           # Overall project plan
