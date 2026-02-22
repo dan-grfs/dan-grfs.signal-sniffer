@@ -1,0 +1,13 @@
+# Arduino CLI Sketch Configuration
+# This file stores default settings for this sketch
+# You can now use simple commands like:
+#   arduino-cli compile esp-32u.ino
+#   arduino-cli upload esp-32u.ino
+#   arduino-cli monitor -p COM4 -c baudrate=115200
+
+default_fqbn: esp32:esp32:esp32
+default_port: COM4
+default_protocol: serial
+
+monitor:
+  baudrate: 115200
